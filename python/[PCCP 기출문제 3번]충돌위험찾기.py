@@ -15,6 +15,8 @@ def crash(now, event_set):
 
     return crash_cnt
 
+# 1. 충돌 처리를 어떻게 할 것인가
+# 2. 중계 지점 변환을 어떻게 할 것인가 --> 아마도 robot의 경로를 각각 받아둔 뒤, 동일 충돌만 확인하는 방식으로..!
 def solution(points, routes):
     
     now = {idx : copy.deepcopy(points[route[0] - 1])\
