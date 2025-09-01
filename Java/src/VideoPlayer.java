@@ -12,9 +12,9 @@ public class VideoPlayer {
             if(result >= opStartTime && result <= opEndTime) result = opEndTime;
 
             if(command.equals("next"))
-                result = (result + 10) > videoLen ? videoLen : result + 10;
+                result = Math.min((result + 10), videoLen);
             else if (command.equals("prev"))
-                result = (result - 10) < 0 ? 0 : result - 10;
+                result = Math.max((result - 10), 0);
         }
         if(result >= opStartTime && result <= opEndTime) result = opEndTime;
         return parseStringTime(result / 60) + ":" + parseStringTime(result % 60);
