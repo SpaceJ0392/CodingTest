@@ -35,7 +35,6 @@ public class DecodeSecretCode {
 
     private boolean isCorrectCode(int[][] query, int[] ans, int[] code, int limNum){
 
-
         for(int i = 0; i < query.length; i++){
             int res = 0;
             int[] checker = new int[limNum + 1];
