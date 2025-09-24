@@ -36,6 +36,7 @@ public class OilDrilling {
         for(int y = 0; y < land.length; y++){
             for(int x = 0; x < land[y].length; x++){
                 if(land[y][x] == 1 && oilMap[y][x] == 0) queue.add(new int[]{y, x});
+
                 while (!queue.isEmpty()) {
                     int[] now = queue.poll();
                     for(int i = 0; i < dy.length; i++){

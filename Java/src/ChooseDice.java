@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ChooseDice {
 
@@ -10,41 +7,61 @@ public class ChooseDice {
 
     public static void main(String[] args) {
         ChooseDice cd = new ChooseDice();
-        cd.solution(new int[][] {{1, 2, 3, 4, 5, 6}, {3, 3, 3, 3, 4, 4}, {1, 3, 3, 4, 4, 4}, {1, 1, 4, 4, 5, 5}});
+        System.out.println(Arrays.toString(cd.solution(
+                new int[][]{
+                        {1, 2, 3, 4, 5, 6},
+                        {3, 3, 3, 3, 4, 4},
+                        {1, 3, 3, 4, 4, 4},
+                        {1, 1, 4, 4, 5, 5}
+                }))
+        );
     }
 
     public int[] solution(int[][] dice) {
-        int[] answer = {};
 
-        int winCnt = 0;
         getCombination(0, 0, dice.length - 1, new int[dice.length / 2]);
         for(int i = 0 ; i < combination.size(); i++){
             sumOfDiceList.add(new ArrayList<>());
             getDiceTotal(0, 0, dice, combination.get(i), i);
-            int[] res = getWinCnt();
-            if(winCnt < res[1]) {
-                winCnt = res[1];
-                answer = combination.get(res[0]);
-            }
         }
 
-        return answer;
+        int[] resultsCombination = combination.get(getWinCombination());
+        for(int i = 0 ; i < resultsCombination.length; i++){
+            resultsCombination[i]++;
+        }
+        return resultsCombination;
     }
 
-    public int[] getWinCnt(){
-        Map<Integer, Integer> diceA = new HashMap<>();
-        Map<Integer, Integer> diceB = new HashMap<>();
-        int caseSize = sumOfDiceList.size();
-        for(int i = 0; i <= caseSize / 2; i++){
-            for(int item : sumOfDiceList.get(i))
-                diceA.merge(item, 1, Integer::sum);
-            for(int item : sumOfDiceList.get(caseSize - 1 - i))
-                diceB.merge(item, 1, Integer::sum);
+    public int getWinCombination() {
+        int maxWinCnt = 0, maxCombinationIdx = -1;
+        for(int i = 0 ; i < combination.size() / 2; i++){
+
+            Map<Integer, Integer> diceATotMap = new HashMap<>();
+            Map<Integer, Integer> diceBTotMap = new HashMap<>();
+            for(int tot : sumOfDiceList.get(i)) diceATotMap.merge(tot, 1, Integer::sum);
+            for(int tot : sumOfDiceList.get(combination.size() - 1 - i)) diceBTotMap.merge(tot, 1, Integer::sum);
+
+            int wincnt = 0, loseCnt = 0, combinationIdx = i;
+            for(int totA :  diceATotMap.keySet()){
+                for(int totB :  diceBTotMap.keySet()){
+                    if (totA < totB) loseCnt += diceATotMap.get(totA) * diceBTotMap.get(totB);
+                    else if (totA > totB) wincnt += diceATotMap.get(totA) * diceBTotMap.get(totB);
+                }
+            }
+
+            if(wincnt < loseCnt) {
+                wincnt = loseCnt;
+                combinationIdx = combination.size() - 1 - i;
+            }
+
+            if(wincnt > maxWinCnt){
+                maxWinCnt = wincnt;
+                maxCombinationIdx = combinationIdx;
+            }
+
         }
 
-        System.out.println(diceA);
-        System.out.println(diceB);
-        return new int[2];
+        return maxCombinationIdx;
     }
 
     public void getDiceTotal(int lev, int res, int[][] dice, int[] myDice, int idx){
